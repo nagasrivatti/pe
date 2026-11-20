@@ -1,0 +1,66 @@
+!pip install -q openai
+import os
+from openai import OpenAI
+# API configuration
+api_key = os.environ.get("OPENAI_API_KEY")
+if not api_key:
+raise ValueError("API key is not configured.")
+client = OpenAI(api_key=api_key)
+# -----------------------------
+# Baseline Prompt
+# -----------------------------
+baseline_prompt = """
+Write a one-paragraph bio of Ada Lovelace.
+"""
+response1 = client.responses.create(
+model="YOUR_APPROVED_MODEL",
+input=baseline_prompt
+)
+baseline_output = response1.output_text
+
+# -----------------------------
+# Enhanced Prompt
+# -----------------------------
+enhanced_prompt = """
+You are a computer science history teacher.
+
+Unit I – Prompt Engineering CSE Department
+
+Sasi Institute of Technology and Engineering
+Write a short biography of Ada Lovelace for first-year
+B.Tech students.
+Include:
+1. Her full name
+2. Her contribution to computing
+3. Her association with Charles Babbage
+4. One important achievement
+Requirements:
+- Use simple English.
+- Write approximately 150 words.
+- Use one paragraph.
+- Maintain an educational and professional tone.
+"""
+response2 = client.responses.create(
+model="YOUR_APPROVED_MODEL",
+input=enhanced_prompt
+)
+enhanced_output = response2.output_text
+
+# -----------------------------
+# Display Results
+# -----------------------------
+print("=" * 60)
+print("BASELINE PROMPT")
+print("=" * 60)
+print(baseline_prompt)
+print("\nBASELINE OUTPUT")
+print("=" * 60)
+print(baseline_output)
+print("\n\n")
+print("=" * 60)
+print("ENHANCED PROMPT")
+print("=" * 60)
+print(enhanced_prompt)
+print("\nENHANCED OUTPUT")
+print("=" * 60)
+print(enhanced_output)
