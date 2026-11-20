@@ -1,0 +1,94 @@
+!pip install -q openai 
+import os 
+from openai import OpenAI 
+# ========================================= 
+# API CONFIGURATION 
+# ========================================= 
+api_key = os.environ.get("OPENAI_API_KEY") 
+if not api_key: 
+ raise ValueError("API key is not configured.") 
+client = OpenAI(api_key=api_key) 
+# ========================================= 
+# TECHNICAL ARTICLE 
+# ========================================= 
+article = """ Cloud computing is a computing model that provides computing resources  such as servers, storage, databases, networking and software through the Internet.  Instead of purchasing and maintaining physical infrastructure, organizations can access  computing resources when needed. 
+Cloud computing commonly provides three service models: Infrastructure as a Service  (IaaS), Platform as a Service (PaaS), and Software as a Service (SaaS). IaaS provides virtualized computing resources, PaaS provides a platform for developing and  deploying applications, and SaaS provides software applications through the Internet. 
+Important benefits of cloud computing include scalability, flexibility, resource sharing  and reduced infrastructure maintenance. Organizations can increase or decrease resources according to demand. However, cloud computing also requires attention to  security, privacy, availability and data management. """ 
+# ========================================= 
+# BASIC PROMPT 
+# ========================================= 
+prompt_basic = f""" 
+Summarize the following technical article. 
+Article: 
+{article} 
+""" 
+response_basic = client.responses.create( 
+ model="YOUR_APPROVED_MODEL", 
+ input=prompt_basic 
+) 
+output_basic = response_basic.output_text 
+# ========================================= 
+# REFINEMENT CYCLE 1
+# ========================================= 
+prompt_cycle1 = f""" 
+Summarize the following technical article. 
+Requirements: 
+- Write approximately 100 words. 
+- Use exactly five bullet points. 
+- Use simple English. 
+- Include the definition of cloud computing. 
+- Mention the three cloud service models. 
+- Mention important benefits. 
+- Mention scalability. 
+- Mention security concerns. 
+Article: 
+{article} 
+""" 
+response_cycle1 = client.responses.create( 
+ model="YOUR_APPROVED_MODEL", 
+ input=prompt_cycle1 
+) 
+output_cycle1 = response_cycle1.output_text 
+# ========================================= # REFINEMENT CYCLE 2 
+# ========================================= prompt_cycle2 = f""" 
+Summarize the following technical article. 
+Follow all the instructions below: 
+1. Create exactly five numbered points. 
+2. Each point must contain one concise sentence. 3. The complete summary must be between 90 and 110 words. 4. Use simple academic English. 
+5. Include the definition of cloud computing. 
+6. Include the three service models: IaaS, PaaS and SaaS. 7. Include the major benefits of cloud computing. 8. Include scalability. 
+9. Include security and privacy concerns. 
+10. Do not add information that is not present in the article. 11. Do not include an introduction or conclusion. 
+Article: 
+{article} 
+""" 
+response_cycle2 = client.responses.create( 
+ model="YOUR_APPROVED_MODEL", 
+ input=prompt_cycle2 
+) 
+output_cycle2 = response_cycle2.output_text 
+# ========================================= # DISPLAY RESULTS 
+# =========================================
+print("=" * 70) 
+print("BASIC PROMPT OUTPUT") 
+print("=" * 70) 
+print(output_basic) 
+print("\n\n") 
+print("=" * 70) 
+print("REFINEMENT CYCLE 1 OUTPUT") 
+print("=" * 70) 
+print(output_cycle1) 
+print("\n\n") 
+print("=" * 70) 
+print("REFINEMENT CYCLE 2 OUTPUT") 
+print("=" * 70) 
+print(output_cycle2) 
+# ========================================= 
+# WORD COUNT 
+# ========================================= 
+print("\n\n") 
+print("=" * 70) 
+print("WORD COUNT – CYCLE 2") 
+print("=" * 70) 
+word_count = len(output_cycle2.split()) 
+print("Word Count:", word_count) 
