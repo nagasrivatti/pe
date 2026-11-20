@@ -1,0 +1,65 @@
+!pip install -q openai 
+import os 
+from openai import OpenAI 
+# ----------------------------------------- 
+# API Configuration 
+# ----------------------------------------- 
+api_key = os.environ.get("OPENAI_API_KEY") 
+if not api_key: 
+ raise ValueError("API key is not configured.") 
+client = OpenAI(api_key=api_key)
+# ========================================= # BASELINE PROMPT 
+# ========================================= 
+baseline_prompt = """ 
+Explain how a college student can manage monthly expenses. Give five practical suggestions. 
+""" 
+response_baseline = client.responses.create( 
+ model="YOUR_APPROVED_MODEL", 
+ input=baseline_prompt 
+) 
+baseline_output = response_baseline.output_text 
+# ========================================= # ROLE-BASED PROMPT 
+# ========================================= 
+role_prompt = """ 
+You are a financial advisor who specializes in helping college students manage their monthly expenses. 
+Explain how a college student can manage monthly expenses. 
+Give five practical suggestions. 
+Use simple English. 
+""" 
+response_role = client.responses.create( 
+ model="YOUR_APPROVED_MODEL", 
+ input=role_prompt 
+) 
+role_output = response_role.output_text 
+# ========================================= # ROLE + NEGATIVE PROMPT 
+# ========================================= 
+negative_prompt = """ 
+You are a financial advisor who specializes in helping college students manage their monthly expenses. 
+Explain how a college student can manage monthly expenses. 
+Give five practical suggestions. 
+Use simple English. 
+Do not mention any brand names. 
+Do not recommend specific financial products. Do not include advertisements.
+""" 
+response_negative = client.responses.create( 
+ model="YOUR_APPROVED_MODEL", 
+ input=negative_prompt 
+) 
+negative_output = response_negative.output_text 
+# ========================================= 
+# DISPLAY RESULTS 
+# ========================================= 
+print("=" * 70) 
+print("BASELINE OUTPUT") 
+print("=" * 70) 
+print(baseline_output) 
+print("\n\n") 
+print("=" * 70) 
+print("ROLE-BASED OUTPUT") 
+print("=" * 70) 
+print(role_output) 
+print("\n\n") 
+print("=" * 70) 
+print("ROLE + NEGATIVE PROMPT OUTPUT") 
+print("=" * 70) 
+print(negative_output) 
